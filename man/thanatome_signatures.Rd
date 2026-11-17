@@ -10,8 +10,11 @@ A list with four elements:
 \item{signatures}{data.frame with one row per gene and signature:
 \code{ensembl} (without version), \code{symbol}, \code{axis}, \code{lfc_consensus}
 (median log2 fold change across tissues), \code{z_stouffer}, \code{n_tissues}
-(concordant tissues), \code{direction} (\code{up} or \code{down}), \code{t_median}
-(shared ischemia only) and \code{in_ventilator}.}
+(concordant tissues, out of 10, or out of 34 for shared ischemia),
+\code{direction} (\code{up} or \code{down}), \code{t_median} (shared ischemia only, \code{NA}
+otherwise) and \code{in_ventilator} (for \code{ischemia} and
+\code{shared_ischemia}, whether the gene is also in the ventilator
+signature).}
 \item{flags}{data.frame of technical flag genes: pancreatic enzymes
 (contamination by neighbouring tissue) and surfactant proteins.}
 \item{thresholds}{\code{min_tissues}, the per-axis \code{min_lfc} and the
@@ -23,8 +26,9 @@ thresholds of \code{shared_ischemia}.}
 GTEx v8 gene read counts from the GTEx portal
 (\url{https://gtexportal.org}, dbGaP phs000424.v8), ten tissues: ovary,
 breast, thyroid, lung, sigmoid colon, transverse colon, liver, prostate,
-uterus and skin (lower leg); DESeq2 per tissue and Stouffer consensus,
-analysis repository
+uterus and skin (lower leg); DESeq2 per tissue and Stouffer consensus.
+Shared ischemia: the 34 non-brain tissues with 80 or more samples,
+limma per tissue. Analysis repository
 \url{https://github.com/hachepunto/thanatome-manuscript}.
 }
 \usage{
@@ -47,10 +51,12 @@ ventilator axis sensitive to ischemic time. A fourth signature,
 whose moderated t for ischemic time (limma on TMM-normalised log2-CPM,
 adjusted for Hardy, age and sex) exceeds 2 in absolute value with the
 same sign in at least 21 of the 34 non-brain GTEx v8 tissues with 80 or
-more samples (284 genes up, 336 down; none or one gene reached that
-consensus when ischemic time was permuted among donors of the same Hardy
-class). It has no fold change (\code{lfc_consensus} is \code{NA}); \code{t_median} holds
-the median t across tissues. Built by
+more samples (284 genes up, 336 down). With ischemic time summarised per
+donor, 190 and 229 genes reached that consensus, against none or one in
+10 permutations of donors within Hardy class; with RIN added to the
+model, 64 and 101 did, so part of the signature is shared with RNA
+integrity. It has no fold change (\code{lfc_consensus} is \code{NA}); \code{t_median}
+holds the median t across tissues. Built by
 \code{inst/scripts/build_signatures.R} (see \code{system.file("scripts", package = "thanatome")}).
 }
 \examples{

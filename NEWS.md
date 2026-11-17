@@ -1,6 +1,8 @@
 # thanatome 0.99.1
 
-- `thanatome_score()` also reports `shared_ischemia`, the score of a signature of 620 genes that follow ischemic time with the same sign in most non-brain GTEx tissues; `death_signatures()` and `death_gene_sets()` accept `"shared_ischemia"`. The vignette has a section on how to read it.
+- `thanatome_score()` also reports `shared_ischemia`, the score of a signature of 620 genes that follow ischemic time with the same sign in most non-brain GTEx tissues; `death_signatures()` and `death_gene_sets()` accept `"shared_ischemia"`. It is `NA` when fewer than half of its genes are available. The vignette has a section on how to read it.
+- The three data objects were rebuilt: `thanatome_references` and `thanatome_example` go from 1663 to 2244 genes; `death_signatures()` returns a new column `t_median` (`NA` for the three previous signatures); `n_genes` has a fourth column. Scores, positions and states along the previous axes are unchanged.
+- The coverage warning of `thanatome_score()` and `frac_deg_in_axes` of `compare_controls()` count only the genes of the ventilator, agony and ischemia signatures, as before.
 
 # thanatome 0.99.0
 

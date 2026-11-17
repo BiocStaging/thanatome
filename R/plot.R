@@ -125,7 +125,8 @@ plot_thanatome <- function(scores, type = c("scatter", "ranked"),
             "ischemia component (informative among perfused ",
             "samples)"
         ),
-        ventilator = "ventilator score", agony = "agony score"
+        ventilator = "ventilator score", agony = "agony score",
+        shared_ischemia = "shared ischemia score"
     )
     ifelse(k %in% names(lab), lab[k], k)
 }

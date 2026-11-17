@@ -69,7 +69,9 @@
 #' @return A list with `summary` (one row per criterion: controls kept, DEGs,
 #'   lost and gained with respect to `all`, the same for the random subsets,
 #'   Jaccard, standard deviation of the change in log fold change, fraction
-#'   of DEGs that are signature genes, sign flips, and the MRA agreement when
+#'   of DEGs that are genes of the ventilator, agony or ischemia signatures
+#'   (`frac_deg_in_axes`; shared ischemia is not counted), sign flips, and
+#'   the MRA agreement when
 #'   `mra` is given), `de` (the DE table of each criterion), `kept` (the
 #'   control names kept by each criterion), `scores` and `mra`.
 #' @examples
@@ -128,7 +130,8 @@ compare_controls <- function(x, group, control = "control", criteria = list(),
     deg <- function(d) {
         d$gene[!is.na(d$padj) & d$padj <= padj & abs(d$log2FoldChange) >= lfc]
     }
-    sig_genes <- unique(.signatures()$signatures$ensembl)
+    sg <- .signatures()$signatures
+    sig_genes <- unique(sg$ensembl[sg$axis != "shared_ischemia"])
     one <- function(k) {
         rnd <- unname(rnd_de[[k]])
         .criterion_metrics(k, de[[k]], de$all, length(kept[[k]]), rnd, deg,

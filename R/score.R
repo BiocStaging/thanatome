@@ -58,7 +58,8 @@
 #' sign in at least 21 of the 34 non-brain GTEx tissues (see
 #' [thanatome_signatures]). It is reported as a raw score (mean z against
 #' the reference, higher with longer ischemia), without poles or position,
-#' and it never enters the joint regression. With the signature derived
+#' and it never enters the joint regression. It is `NA` when fewer than
+#' half of its genes are available. With the signature derived
 #' without the scored tissue, its Spearman correlation with ischemic time
 #' within GTEx was 0.50-0.73 in nine tissues, mostly among ventilated
 #' donors (0.36-0.58; -0.31 to 0.25 among the rest), so it saturates within
@@ -285,7 +286,8 @@ thanatome_score <- function(x, reference, axes = c("ventilator", "agony"),
         stop("fewer than 50 reference genes found in 'x'; ",
             "check that row names are Ensembl ids")
     }
-    sig_ref <- intersect(sig$ensembl, expressed)
+    ## coverage of the axes only: positions do not use shared ischemia
+    sig_ref <- intersect(sig$ensembl[sig$axis != "shared_ischemia"], expressed)
     n_found <- length(intersect(g, sig_ref))
     n_low <- length(attr(m, "dropped_signature"))
     if (n_found < 0.9 * length(sig_ref)) {
@@ -318,7 +320,12 @@ thanatome_score <- function(x, reference, axes = c("ventilator", "agony"),
 }
 ## Signature score per axis, one row per sample
 .axis_scores <- function(z, sig, cols) {
-    one <- function(a) .signature_score(z, sig[sig$axis == a, ])
+    ## shared ischemia needs half of its genes: a small subset is mostly
+    ## its overlap with the ventilator signature
+    one <- function(a) {
+        .signature_score(z, sig[sig$axis == a, ],
+            min_frac = if (a == "shared_ischemia") 0.5 else 0)
+    }
     scores <- vapply(cols, one, numeric(ncol(z)))
     S4Vectors::DataFrame(matrix(scores, ncol = length(cols),
                                 dimnames = list(colnames(z), cols)))
@@ -501,10 +508,13 @@ thanatome_score <- function(x, reference, axes = c("ventilator", "agony"),
                 n_pole1 = c(sum(h >= 1, na.rm = TRUE), sum(slow)),
                 stringsAsFactors = FALSE)
 }
-## Signature score: mean z with the consensus sign (NA with fewer than 5 genes)
-.signature_score <- function(z, s) {
+## Signature score: mean z with the consensus sign (NA with fewer than 5
+## genes or fewer than `min_frac` of the signature)
+.signature_score <- function(z, s, min_frac = 0) {
     g <- intersect(s$ensembl, rownames(z))
-    if (length(g) < 5) return(rep(NA_real_, ncol(z)))
+    if (length(g) < max(5, min_frac * nrow(s))) {
+        return(rep(NA_real_, ncol(z)))
+    }
     sgn <- ifelse(s$direction[match(g, s$ensembl)] == "up", 1, -1)
     colMeans(z[g, , drop = FALSE] * sgn)
 }

@@ -34,8 +34,9 @@ Bioconductor (for example \code{fgsea}, \code{limma::camera()}, \code{GSVA},
 direction, because the signatures are signed: \code{ventilator_up} holds the
 genes higher in ventilated donors (Hardy 0) than in the rest, \code{agony_up}
 the genes higher in slow deaths (Hardy 3-4) than in fast deaths
-(Hardy 1-2), and \code{ischemia_up} the genes that rise with post-mortem
-ischemic time. With \code{split = FALSE} each axis becomes a single unsigned
+(Hardy 1-2), and \code{ischemia_up} and \code{shared_ischemia_up} the genes that
+rise with post-mortem ischemic time. With \code{split = FALSE} each axis
+becomes a single unsigned
 set, suitable only for tests that ignore direction.
 }
 \examples{

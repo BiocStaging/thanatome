@@ -18,10 +18,12 @@
 #' whose moderated t for ischemic time (limma on TMM-normalised log2-CPM,
 #' adjusted for Hardy, age and sex) exceeds 2 in absolute value with the
 #' same sign in at least 21 of the 34 non-brain GTEx v8 tissues with 80 or
-#' more samples (284 genes up, 336 down; none or one gene reached that
-#' consensus when ischemic time was permuted among donors of the same Hardy
-#' class). It has no fold change (`lfc_consensus` is `NA`); `t_median` holds
-#' the median t across tissues. Built by
+#' more samples (284 genes up, 336 down). With ischemic time summarised per
+#' donor, 190 and 229 genes reached that consensus, against none or one in
+#' 10 permutations of donors within Hardy class; with RIN added to the
+#' model, 64 and 101 did, so part of the signature is shared with RNA
+#' integrity. It has no fold change (`lfc_consensus` is `NA`); `t_median`
+#' holds the median t across tissues. Built by
 #' `inst/scripts/build_signatures.R` (see `system.file("scripts",
 #' package = "thanatome")`).
 #'
@@ -30,8 +32,11 @@
 #'   \item{signatures}{data.frame with one row per gene and signature:
 #'     `ensembl` (without version), `symbol`, `axis`, `lfc_consensus`
 #'     (median log2 fold change across tissues), `z_stouffer`, `n_tissues`
-#'     (concordant tissues), `direction` (`up` or `down`), `t_median`
-#'     (shared ischemia only) and `in_ventilator`.}
+#'     (concordant tissues, out of 10, or out of 34 for shared ischemia),
+#'     `direction` (`up` or `down`), `t_median` (shared ischemia only, `NA`
+#'     otherwise) and `in_ventilator` (for `ischemia` and
+#'     `shared_ischemia`, whether the gene is also in the ventilator
+#'     signature).}
 #'   \item{flags}{data.frame of technical flag genes: pancreatic enzymes
 #'     (contamination by neighbouring tissue) and surfactant proteins.}
 #'   \item{thresholds}{`min_tissues`, the per-axis `min_lfc` and the
@@ -41,8 +46,9 @@
 #' @source GTEx v8 gene read counts from the GTEx portal
 #'   (\url{https://gtexportal.org}, dbGaP phs000424.v8), ten tissues: ovary,
 #'   breast, thyroid, lung, sigmoid colon, transverse colon, liver, prostate,
-#'   uterus and skin (lower leg); DESeq2 per tissue and Stouffer consensus,
-#'   analysis repository
+#'   uterus and skin (lower leg); DESeq2 per tissue and Stouffer consensus.
+#'   Shared ischemia: the 34 non-brain tissues with 80 or more samples,
+#'   limma per tissue. Analysis repository
 #'   \url{https://github.com/hachepunto/thanatome-manuscript}.
 #' @references GTEx Consortium (2020) Science 369:1318-1330
 #'   \doi{10.1126/science.aaz1776}; Ferreira PG et al. (2018) Nature
@@ -58,7 +64,8 @@
 
 #' Per-tissue GTEx references for centring new samples
 #'
-#' For each of the ten GTEx v8 tissues used to derive the signatures: the
+#' For each of the ten GTEx v8 tissues used to derive the signatures of the
+#' axes: the
 #' mean and standard deviation of log2-CPM (prior count 1, full library
 #' size) of every signature and flag gene across the GTEx samples of that
 #' tissue, which of those genes are expressed there (mean log2-CPM above 0;
@@ -103,7 +110,7 @@
 #' consensus, the references and the poles, so any accuracy measured on
 #' them is in-sample. Built by `inst/scripts/build_example.R`.
 #'
-#' @format A `SummarizedExperiment` with 1663 genes and 114 samples.
+#' @format A `SummarizedExperiment` with 2244 genes and 114 samples.
 #' @source recount3 projects OVARY (GTEx v8, RNASEQ freeze) and OV (TCGA
 #'   primary tumours), gene read counts, GENCODE v26.
 #' @usage data(thanatome_example)

@@ -98,9 +98,10 @@ c(ventilated = cor(sc$shared_ischemia[vent], ctl$ischemic_time[vent],
         method = "spearman", use = "complete.obs"),
     other = cor(sc$shared_ischemia[!vent], ctl$ischemic_time[!vent],
         method = "spearman", use = "complete.obs"))
+cor(sc$shared_ischemia, sc$ventilator, method = "spearman")
 ```
 
-GTEx ovary entered the consensus, so these figures are in-sample. How to read the score:
+GTEx ovary entered the consensus, so these figures are in-sample, and the correlation over all donors is in large part the difference between ventilated donors, whose tissue is collected sooner, and the rest (hence the correlation with the ventilator score). The statements below come from the analyses of the authors in the repository cited in `?thanatome_signatures`, not yet published. How to read the score:
 
 - It follows ischemic time mostly among ventilated donors and little among the rest, so it saturates within hours and is not a clock.
 - It separates GTEx tissue from the adjacent normal tissue of TCGA, which the ventilator and agony axes do not; that difference cannot be told apart from the study of origin.
@@ -181,7 +182,7 @@ tapply(rg$r2_signature, ctl$hardy, median)
 
 The natural loop is: score the samples, filter, look at the differential expression or the master-regulator analysis, and filter again. Its weakness is that the last step selects on the outcome: a filter kept because "the DE looks better" is a filter fitted to the result. `compare_controls()` turns the loop into one pass. The candidate criteria are declared first; each one is run once; every result is compared with the one obtained with all controls **and** with random subsets of the same size, which are the yardstick for what losing samples does by itself. A criterion whose losses and gains do not exceed those of the random subsets acts through sample size, not through the death axes.
 
-The example carries only the signature genes, so the fraction of DEGs in the axes (`frac_deg_in_axes`) is close to 1 by construction; with a whole transcriptome it is the quantity of interest. The fits should mirror the real analysis: `design` takes the covariates of the user's DE as a formula over `colData` (for example `~ batch + sex`; the group term is added last and tested), and `BPPARAM` spreads the edgeR fits over workers. The random subsets are drawn before fitting, so with the same `set.seed()` the result does not depend on the backend.
+The example carries only the signature genes, so the fraction of DEGs in the axes (`frac_deg_in_axes`) is high by construction; with a whole transcriptome it is the quantity of interest. The fits should mirror the real analysis: `design` takes the covariates of the user's DE as a formula over `colData` (for example `~ batch + sex`; the group term is added last and tested), and `BPPARAM` spreads the edgeR fits over workers. The random subsets are drawn before fitting, so with the same `set.seed()` the result does not depend on the backend.
 
 ```{r compare}
 set.seed(1)

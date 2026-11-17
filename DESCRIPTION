@@ -25,7 +25,8 @@ Description: Annotates each sample of a post-mortem tissue cohort (GTEx or
     similar) with its position along two transcriptional axes of donor death
     derived from GTEx v8 across ten tissues, ventilator (perfused versus
     post-mortem) and prolonged agony, plus the ischemia component of the
-    ventilator axis. For every sample it returns a signature score per axis,
+    ventilator axis and the score of a signature of ischemic time shared
+    across GTEx tissues. For every sample it returns a signature score per axis,
     a position scaled between the two reference poles of the same tissue, a
     state label and technical contamination flags, and optionally the
     fraction of the sample's deviation from the tissue centroid that lies

@@ -166,7 +166,8 @@ protein-coding genes whose expression follows ischemic time with the same
 sign in at least 21 of the 34 non-brain GTEx tissues (see
 \link{thanatome_signatures}). It is reported as a raw score (mean z against
 the reference, higher with longer ischemia), without poles or position,
-and it never enters the joint regression. With the signature derived
+and it never enters the joint regression. It is \code{NA} when fewer than
+half of its genes are available. With the signature derived
 without the scored tissue, its Spearman correlation with ischemic time
 within GTEx was 0.50-0.73 in nine tissues, mostly among ventilated
 donors (0.36-0.58; -0.31 to 0.25 among the rest), so it saturates within

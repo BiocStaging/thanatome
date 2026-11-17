@@ -212,3 +212,31 @@ test_that("audit_report writes to a file", {
     expect_true(file.exists(f))
     expect_gt(length(readLines(f)), 3)
 })
+
+test_that("shared ischemia needs half of its genes and leaves the axes alone", {
+    sh <- death_signatures("shared_ischemia")$ensembl
+    ax <- death_signatures(c("ventilator", "agony", "ischemia"))$ensembl
+    full <- thanatome_score(ctl, reference = "ovary")
+    expect_false(anyNA(full$shared_ischemia))
+    ## without the genes that only belong to shared ischemia: no coverage
+    ## warning, same axes, and the score is NA instead of its overlap
+    part <- expect_no_warning(thanatome_score(
+        ctl[!rownames(ctl) %in% setdiff(sh, ax), ], reference = "ovary"))
+    expect_true(all(is.na(part$shared_ischemia)))
+    expect_equal(part$ventilator, full$ventilator)
+    expect_equal(part$position_agony, full$position_agony)
+    expect_identical(part$state, full$state)
+    expect_true(all(part$n_genes[, "shared_ischemia"] < length(sh) / 2))
+    ## cohort reference
+    coh <- thanatome_score(ctl, reference = ctl)
+    expect_false(anyNA(coh$shared_ischemia))
+    expect_gt(cor(coh$shared_ischemia, full$shared_ischemia), 0.9)
+})
+
+test_that("shared ischemia is not an axis for the annotation functions", {
+    de <- data.frame(gene = rownames(ctl)[1:20], log2FoldChange = 1,
+        padj = 0.01)
+    expect_error(annotate_de(de, axes = "shared_ischemia"))
+    expect_error(annotate_mra(data.frame(regulator = "A", nes = 1,
+        padj = 0.01), axes = "shared_ischemia"))
+})

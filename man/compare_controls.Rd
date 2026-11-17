@@ -94,7 +94,9 @@ Default \code{\link[BiocParallel:SerialParam-class]{BiocParallel::SerialParam()}
 A list with \code{summary} (one row per criterion: controls kept, DEGs,
 lost and gained with respect to \code{all}, the same for the random subsets,
 Jaccard, standard deviation of the change in log fold change, fraction
-of DEGs that are signature genes, sign flips, and the MRA agreement when
+of DEGs that are genes of the ventilator, agony or ischemia signatures
+(\code{frac_deg_in_axes}; shared ischemia is not counted), sign flips, and
+the MRA agreement when
 \code{mra} is given), \code{de} (the DE table of each criterion), \code{kept} (the
 control names kept by each criterion), \code{scores} and \code{mra}.
 }

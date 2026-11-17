@@ -5,7 +5,7 @@
 \alias{thanatome_example}
 \title{Example data: GTEx ovary controls and TCGA-OV tumours}
 \format{
-A \code{SummarizedExperiment} with 1663 genes and 114 samples.
+A \code{SummarizedExperiment} with 2244 genes and 114 samples.
 }
 \source{
 recount3 projects OVARY (GTEx v8, RNASEQ freeze) and OV (TCGA

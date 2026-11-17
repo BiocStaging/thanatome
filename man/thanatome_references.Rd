@@ -28,7 +28,8 @@ RNASEQ freeze samples, one run per sample.
 data(thanatome_references)
 }
 \description{
-For each of the ten GTEx v8 tissues used to derive the signatures: the
+For each of the ten GTEx v8 tissues used to derive the signatures of the
+axes: the
 mean and standard deviation of log2-CPM (prior count 1, full library
 size) of every signature and flag gene across the GTEx samples of that
 tissue, which of those genes are expressed there (mean log2-CPM above 0;
