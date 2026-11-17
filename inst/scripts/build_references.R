@@ -49,7 +49,7 @@ genes_ref <- unique(c(sig$ensembl, thanatome_signatures$flags$ensembl))
 score_axis <- function(z, axis) {
     s <- sig[sig$axis == axis, ]
     g <- intersect(s$ensembl, rownames(z))
-    sgn <- sign(s$lfc_consensus[match(g, s$ensembl)])
+    sgn <- ifelse(s$direction[match(g, s$ensembl)] == "up", 1, -1)
     colMeans(z[g, , drop = FALSE] * sgn)
 }
 projects <- lapply(unique(tissues$project), get_project)

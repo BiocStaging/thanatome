@@ -36,7 +36,8 @@ or rlog values are not comparable with the reference.}
 matrix of the same tissue to be used as cohort reference.}
 
 \item{axes}{Axes to score: \code{"ventilator"}, \code{"agony"} or both (default).
-The ischemia component is always reported.}
+The ischemia component and the shared ischemia score are always
+reported.}
 
 \item{method}{\code{"signature"} (default) or \code{"regression"}. The regression
 adds \code{beta_ventilator}, \code{beta_agony}, \code{r2_signature} (over the signature
@@ -96,7 +97,8 @@ raised; see \code{\link[=contamination_flags]{contamination_flags()}}.}
 }
 \value{
 A \code{DataFrame} (one row per sample) with the signature scores
-(\code{ventilator}, \code{agony}, \code{ischemia}), \code{position_ventilator},
+(\code{ventilator}, \code{agony}, \code{ischemia}, \code{shared_ischemia}),
+\code{position_ventilator},
 \code{position_agony}, \code{state} (\code{perfused}, \code{postmortem_rapid},
 \code{postmortem_agony}, or \code{postmortem} when the agony axis is not
 available), \code{flag_pancreas}, \code{flag_surfactant}, the regression columns
@@ -157,6 +159,23 @@ post-mortem ischemic time, and it tracks ischemic time only among perfused
 (ventilated) donors (partial Spearman correlation with ischemic time given
 the ventilator score 0.20-0.50 within GTEx Hardy 0). It never enters the
 joint regression as a coefficient.
+
+\strong{Shared ischemia.} The column \code{shared_ischemia} is the score of a
+fourth signature, defined by consistency and not by effect size: 620
+protein-coding genes whose expression follows ischemic time with the same
+sign in at least 21 of the 34 non-brain GTEx tissues (see
+\link{thanatome_signatures}). It is reported as a raw score (mean z against
+the reference, higher with longer ischemia), without poles or position,
+and it never enters the joint regression. With the signature derived
+without the scored tissue, its Spearman correlation with ischemic time
+within GTEx was 0.50-0.73 in nine tissues, mostly among ventilated
+donors (0.36-0.58; -0.31 to 0.25 among the rest), so it saturates within
+hours and should not be read as a clock. Unlike the ventilator axis, it
+places the adjacent normal tissue of TCGA below nearly all GTEx samples
+of the same tissue (recount3 counts; AUC of GTEx over adjacent tissue
+0.90-1.00), a difference that cannot be separated from the study of
+origin. It has not been validated outside GTEx. It does not apply to
+brain, where the effect of ischemic time has a different direction.
 
 \strong{Reliability.} With signatures derived without the scored tissue, the
 ventilator score recovers the Hardy 0 label with AUC 0.87-0.94 and the

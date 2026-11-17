@@ -52,6 +52,23 @@
 #' the ventilator score 0.20-0.50 within GTEx Hardy 0). It never enters the
 #' joint regression as a coefficient.
 #'
+#' **Shared ischemia.** The column `shared_ischemia` is the score of a
+#' fourth signature, defined by consistency and not by effect size: 620
+#' protein-coding genes whose expression follows ischemic time with the same
+#' sign in at least 21 of the 34 non-brain GTEx tissues (see
+#' [thanatome_signatures]). It is reported as a raw score (mean z against
+#' the reference, higher with longer ischemia), without poles or position,
+#' and it never enters the joint regression. With the signature derived
+#' without the scored tissue, its Spearman correlation with ischemic time
+#' within GTEx was 0.50-0.73 in nine tissues, mostly among ventilated
+#' donors (0.36-0.58; -0.31 to 0.25 among the rest), so it saturates within
+#' hours and should not be read as a clock. Unlike the ventilator axis, it
+#' places the adjacent normal tissue of TCGA below nearly all GTEx samples
+#' of the same tissue (recount3 counts; AUC of GTEx over adjacent tissue
+#' 0.90-1.00), a difference that cannot be separated from the study of
+#' origin. It has not been validated outside GTEx. It does not apply to
+#' brain, where the effect of ischemic time has a different direction.
+#'
 #' **Reliability.** With signatures derived without the scored tissue, the
 #' ventilator score recovers the Hardy 0 label with AUC 0.87-0.94 and the
 #' agony score the Hardy 3-4 label with AUC 0.69-0.90. The state label built
@@ -79,7 +96,8 @@
 #'   `names(thanatome_references)`), or a `SummarizedExperiment` / count
 #'   matrix of the same tissue to be used as cohort reference.
 #' @param axes Axes to score: `"ventilator"`, `"agony"` or both (default).
-#'   The ischemia component is always reported.
+#'   The ischemia component and the shared ischemia score are always
+#'   reported.
 #' @param method `"signature"` (default) or `"regression"`. The regression
 #'   adds `beta_ventilator`, `beta_agony`, `r2_signature` (over the signature
 #'   genes) and `r2_total` (over all genes; `NA` unless both the reference,
@@ -127,7 +145,8 @@
 #' @param flag_threshold Mean log2-CPM above which a contamination flag is
 #'   raised; see [contamination_flags()].
 #' @return A `DataFrame` (one row per sample) with the signature scores
-#'   (`ventilator`, `agony`, `ischemia`), `position_ventilator`,
+#'   (`ventilator`, `agony`, `ischemia`, `shared_ischemia`),
+#'   `position_ventilator`,
 #'   `position_agony`, `state` (`perfused`, `postmortem_rapid`,
 #'   `postmortem_agony`, or `postmortem` when the agony axis is not
 #'   available), `flag_pancreas`, `flag_surfactant`, the regression columns
@@ -168,7 +187,7 @@ thanatome_score <- function(x, reference, axes = c("ventilator", "agony"),
     sig <- .signatures()$signatures
     mz <- .prepare_for_z(m, ref, normalize, drop_unexpressed)
     z <- .z_against_reference(mz, ref, sig)
-    cols <- c(axes, "ischemia")
+    cols <- c(axes, "ischemia", "shared_ischemia")
     out <- .axis_scores(z, sig, cols)
     pos <- .positions(out, ref$poles)
     out$position_ventilator <- pos$ventilator
@@ -181,7 +200,7 @@ thanatome_score <- function(x, reference, axes = c("ventilator", "agony"),
     out$flag_surfactant <- fl$surfactant
     if (method == "regression") {
         full <- ref$cohort && length(ref$mean) >= 10000 && nrow(mz) >= 10000
-        rg <- .regression(z, sig[sig$axis %in% cols, ],
+        rg <- .regression(z, sig[sig$axis %in% c(axes, "ischemia"), ],
                         total_ss = if (full) .total_ss(mz, ref) else NULL)
         out <- cbind(out, rg)
     }
@@ -486,7 +505,8 @@ thanatome_score <- function(x, reference, axes = c("ventilator", "agony"),
 .signature_score <- function(z, s) {
     g <- intersect(s$ensembl, rownames(z))
     if (length(g) < 5) return(rep(NA_real_, ncol(z)))
-    colMeans(z[g, , drop = FALSE] * sign(s$lfc_consensus[match(g, s$ensembl)]))
+    sgn <- ifelse(s$direction[match(g, s$ensembl)] == "up", 1, -1)
+    colMeans(z[g, , drop = FALSE] * sgn)
 }
 .positions <- function(out, poles) {
     one <- function(axis) {

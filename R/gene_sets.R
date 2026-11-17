@@ -12,8 +12,8 @@
 #' ischemic time. With `split = FALSE` each axis becomes a single unsigned
 #' set, suitable only for tests that ignore direction.
 #'
-#' @param axes Axes to export: `"ventilator"`, `"agony"` and/or
-#'   `"ischemia"`. Default the two axes.
+#' @param axes Axes to export: `"ventilator"`, `"agony"`, `"ischemia"`
+#'   and/or `"shared_ischemia"`. Default the two axes.
 #' @param id Gene identifiers: `"ensembl"` (unversioned, default) or
 #'   `"symbol"` (genes without a symbol are dropped).
 #' @param split Logical; `TRUE` (default) gives one set per axis and
@@ -33,8 +33,10 @@
 death_gene_sets <- function(axes = c("ventilator", "agony"),
                             id = c("ensembl", "symbol"), split = TRUE,
                             format = c("list", "GeneSetCollection")) {
-    axes <- match.arg(axes, c("ventilator", "agony", "ischemia"),
-                        several.ok = TRUE)
+    axes <- match.arg(
+        axes, c("ventilator", "agony", "ischemia", "shared_ischemia"),
+        several.ok = TRUE
+    )
     id <- match.arg(id)
     format <- match.arg(format)
     s <- death_signatures(axes)

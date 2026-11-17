@@ -10,11 +10,12 @@ A list with four elements:
 \item{signatures}{data.frame with one row per gene and signature:
 \code{ensembl} (without version), \code{symbol}, \code{axis}, \code{lfc_consensus}
 (median log2 fold change across tissues), \code{z_stouffer}, \code{n_tissues}
-(concordant tissues), \code{direction} (\code{up} or \code{down}) and
-\code{in_ventilator}.}
+(concordant tissues), \code{direction} (\code{up} or \code{down}), \code{t_median}
+(shared ischemia only) and \code{in_ventilator}.}
 \item{flags}{data.frame of technical flag genes: pancreatic enzymes
 (contamination by neighbouring tissue) and surfactant proteins.}
-\item{thresholds}{\code{min_tissues} and the per-axis \code{min_lfc}.}
+\item{thresholds}{\code{min_tissues}, the per-axis \code{min_lfc} and the
+thresholds of \code{shared_ischemia}.}
 \item{source}{one line describing the origin.}
 }
 }
@@ -41,7 +42,15 @@ ischemic time). Ischemia is not a third axis: 61 of its 86 genes belong
 to the ventilator signature with the opposite sign (\code{in_ventilator}) and
 only 10-23 were expressed per tissue in the analysis (15-29 in the
 packaged recount3 references); it is the component of the
-ventilator axis sensitive to ischemic time. Built by
+ventilator axis sensitive to ischemic time. A fourth signature,
+\code{shared_ischemia}, comes from a different consensus: protein-coding genes
+whose moderated t for ischemic time (limma on TMM-normalised log2-CPM,
+adjusted for Hardy, age and sex) exceeds 2 in absolute value with the
+same sign in at least 21 of the 34 non-brain GTEx v8 tissues with 80 or
+more samples (284 genes up, 336 down; none or one gene reached that
+consensus when ischemic time was permuted among donors of the same Hardy
+class). It has no fold change (\code{lfc_consensus} is \code{NA}); \code{t_median} holds
+the median t across tissues. Built by
 \code{inst/scripts/build_signatures.R} (see \code{system.file("scripts", package = "thanatome")}).
 }
 \examples{

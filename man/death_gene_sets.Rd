@@ -12,8 +12,8 @@ death_gene_sets(
 )
 }
 \arguments{
-\item{axes}{Axes to export: \code{"ventilator"}, \code{"agony"} and/or
-\code{"ischemia"}. Default the two axes.}
+\item{axes}{Axes to export: \code{"ventilator"}, \code{"agony"}, \code{"ischemia"}
+and/or \code{"shared_ischemia"}. Default the two axes.}
 
 \item{id}{Gene identifiers: \code{"ensembl"} (unversioned, default) or
 \code{"symbol"} (genes without a symbol are dropped).}

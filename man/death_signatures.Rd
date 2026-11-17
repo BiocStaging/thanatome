@@ -7,14 +7,15 @@
 death_signatures(axes = c("ventilator", "agony", "ischemia"))
 }
 \arguments{
-\item{axes}{Which signatures to return: \code{"ventilator"}, \code{"agony"} and/or
-\code{"ischemia"} (the ischemia component of the ventilator axis; see
-\link{thanatome_signatures}).}
+\item{axes}{Which signatures to return: \code{"ventilator"}, \code{"agony"},
+\code{"ischemia"} (the ischemia component of the ventilator axis) and/or
+\code{"shared_ischemia"} (the response to ischemic time shared by the
+non-brain tissues); see \link{thanatome_signatures}. Default the first three.}
 }
 \value{
 A \code{data.frame} with one row per gene and signature (columns
 \code{ensembl}, \code{symbol}, \code{axis}, \code{lfc_consensus}, \code{z_stouffer},
-\code{n_tissues}, \code{direction}, \code{in_ventilator}).
+\code{n_tissues}, \code{direction}, \code{t_median}, \code{in_ventilator}).
 }
 \description{
 Access the consensus death signatures

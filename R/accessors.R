@@ -2,17 +2,21 @@
 
 #' Access the consensus death signatures
 #'
-#' @param axes Which signatures to return: `"ventilator"`, `"agony"` and/or
-#'   `"ischemia"` (the ischemia component of the ventilator axis; see
-#'   [thanatome_signatures]).
+#' @param axes Which signatures to return: `"ventilator"`, `"agony"`,
+#'   `"ischemia"` (the ischemia component of the ventilator axis) and/or
+#'   `"shared_ischemia"` (the response to ischemic time shared by the
+#'   non-brain tissues); see [thanatome_signatures]. Default the first three.
 #' @return A `data.frame` with one row per gene and signature (columns
 #'   `ensembl`, `symbol`, `axis`, `lfc_consensus`, `z_stouffer`,
-#'   `n_tissues`, `direction`, `in_ventilator`).
+#'   `n_tissues`, `direction`, `t_median`, `in_ventilator`).
 #' @examples
 #' head(death_signatures("agony"))
 #' @export
 death_signatures <- function(axes = c("ventilator", "agony", "ischemia")) {
-    axes <- match.arg(axes, several.ok = TRUE)
+    axes <- match.arg(
+        axes, c("ventilator", "agony", "ischemia", "shared_ischemia"),
+        several.ok = TRUE
+    )
     s <- .signatures()$signatures
     s[s$axis %in% axes, , drop = FALSE]
 }

@@ -1,6 +1,6 @@
 Package: thanatome
 Title: Donor Death Signatures for Post-Mortem Control Tissue
-Version: 0.99.0
+Version: 0.99.1
 Authors@R: c(
     person("Daniel", "Pérez-Calixto",
            email = "dperez@inmegen.gob.mx",
@@ -69,5 +69,5 @@ VignetteBuilder: knitr
 URL: https://github.com/hachepunto/thanatome
 BugReports: https://github.com/hachepunto/thanatome/issues
 LazyData: false
-Date: 2026-11-09
+Date: 2026-11-17
 RoxygenNote: 7.3.3

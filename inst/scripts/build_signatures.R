@@ -37,10 +37,33 @@ read_axis <- function(axis) {
     )
 }
 signatures <- do.call(rbind, lapply(names(axes), read_axis))
+signatures$t_median <- NA_real_
+## Shared ischemia: protein-coding genes whose moderated t for ischemic time
+## (limma on log2-CPM, adjusted for Hardy, age and sex) exceeds 2 in absolute
+## value with the same sign in at least 60 percent of the non-brain GTEx
+## tissues (21 of 34). Defined by consistency of sign, not by fold change:
+## the effect per gene is small and a fold-change threshold removes it.
+shared <- read.delim(
+    file.path(repo, "results", "firmas", "isquemia_atlas_consenso.tsv"),
+    stringsAsFactors = FALSE
+)
+shared <- shared[shared$signo != 0, ]
+shared_summary <- read.delim(
+    file.path(
+        repo, "results", "final", "tables", "isquemia_atlas_resumen.tsv"
+    )
+)
+signatures <- rbind(signatures, data.frame(
+    ensembl = shared$ensembl, symbol = shared$symbol,
+    axis = "shared_ischemia", lfc_consensus = NA_real_, z_stouffer = NA_real_,
+    n_tissues = pmax(shared$n_sube, shared$n_baja),
+    direction = ifelse(shared$signo > 0, "up", "down"),
+    t_median = shared$t_mediano, stringsAsFactors = FALSE
+))
 rownames(signatures) <- NULL
 vent <- signatures$ensembl[signatures$axis == "ventilator"]
-signatures$in_ventilator <- signatures$axis == "ischemia" &
-    signatures$ensembl %in% vent
+signatures$in_ventilator <- signatures$axis %in%
+    c("ischemia", "shared_ischemia") & signatures$ensembl %in% vent
 ## Technical flag sets (neighbouring-tissue contamination; Nieuwenhuis et al.
 ## 2020)
 genes <- read.delim(
@@ -63,15 +86,22 @@ flags <- do.call(rbind, lapply(names(flag_sets), function(f) {
 rownames(flags) <- NULL
 thanatome_signatures <- list(
     signatures = signatures, flags = flags,
-    thresholds = list(min_tissues = min_tissues, min_lfc = min_lfc),
+    thresholds = list(
+        min_tissues = min_tissues, min_lfc = min_lfc,
+        shared_ischemia = c(
+            min_abs_t = 2, min_tissues = shared_summary$k,
+            tissues = shared_summary$tejidos_no_cerebro
+        )
+    ),
     source = paste0(
         "GTEx v8 (portal gene read counts), ten tissues; DESeq2 per tissue ",
-        "and Stouffer consensus; hachepunto/thanatome-manuscript ",
-        "results/firmas"
+        "and Stouffer consensus; shared ischemia: limma per tissue over the ",
+        "non-brain tissues and consensus by sign; ",
+        "hachepunto/thanatome-manuscript results/firmas"
     )
 )
 print(table(signatures$axis, signatures$direction))
-print(table(signatures$in_ventilator[signatures$axis == "ischemia"]))
+print(table(signatures$axis, signatures$in_ventilator))
 save(thanatome_signatures,
     file = "data/thanatome_signatures.rda", compress = "xz"
 )

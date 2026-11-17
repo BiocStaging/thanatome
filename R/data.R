@@ -13,7 +13,15 @@
 #' to the ventilator signature with the opposite sign (`in_ventilator`) and
 #' only 10-23 were expressed per tissue in the analysis (15-29 in the
 #' packaged recount3 references); it is the component of the
-#' ventilator axis sensitive to ischemic time. Built by
+#' ventilator axis sensitive to ischemic time. A fourth signature,
+#' `shared_ischemia`, comes from a different consensus: protein-coding genes
+#' whose moderated t for ischemic time (limma on TMM-normalised log2-CPM,
+#' adjusted for Hardy, age and sex) exceeds 2 in absolute value with the
+#' same sign in at least 21 of the 34 non-brain GTEx v8 tissues with 80 or
+#' more samples (284 genes up, 336 down; none or one gene reached that
+#' consensus when ischemic time was permuted among donors of the same Hardy
+#' class). It has no fold change (`lfc_consensus` is `NA`); `t_median` holds
+#' the median t across tissues. Built by
 #' `inst/scripts/build_signatures.R` (see `system.file("scripts",
 #' package = "thanatome")`).
 #'
@@ -22,11 +30,12 @@
 #'   \item{signatures}{data.frame with one row per gene and signature:
 #'     `ensembl` (without version), `symbol`, `axis`, `lfc_consensus`
 #'     (median log2 fold change across tissues), `z_stouffer`, `n_tissues`
-#'     (concordant tissues), `direction` (`up` or `down`) and
-#'     `in_ventilator`.}
+#'     (concordant tissues), `direction` (`up` or `down`), `t_median`
+#'     (shared ischemia only) and `in_ventilator`.}
 #'   \item{flags}{data.frame of technical flag genes: pancreatic enzymes
 #'     (contamination by neighbouring tissue) and surfactant proteins.}
-#'   \item{thresholds}{`min_tissues` and the per-axis `min_lfc`.}
+#'   \item{thresholds}{`min_tissues`, the per-axis `min_lfc` and the
+#'     thresholds of `shared_ischemia`.}
 #'   \item{source}{one line describing the origin.}
 #' }
 #' @source GTEx v8 gene read counts from the GTEx portal

@@ -35,6 +35,8 @@ test_that("regression adds beta and r2 columns but keeps ischemia marginal", {
     ) %in% colnames(sc)))
     expect_false("beta_ischemia" %in% colnames(sc))
     expect_true("ischemia" %in% colnames(sc))
+    expect_true("shared_ischemia" %in% colnames(sc))
+    expect_false("beta_shared_ischemia" %in% colnames(sc))
     expect_true(all(sc$r2_signature >= 0 & sc$r2_signature <= 1))
     expect_true(all(is.na(sc$r2_total)))
     expect_gt(cor(sc$beta_ventilator, sc$ventilator), 0.8)

@@ -1,19 +1,16 @@
 script: build_signatures
-date: 2026-11-08 12:22 CST
-analysis repository commit: 85b470acd814483834e5e1bd4257d9408fb05f5c
+date: 2026-11-14 20:23 CST
+analysis repository commit: 5aae98a4d0611c031b67c5132e5af90f7d49d646
 
-R version 4.5.2 (2025-10-31)
+R version 4.6.1 (2026-06-24)
 Platform: x86_64-conda-linux-gnu
 Running under: Ubuntu 26.04 LTS
 
 Matrix products: default
-BLAS/LAPACK: /scratch/home/hachepunto/miniforge/envs/bio/lib/libopenblasp-r0.3.30.so;  LAPACK version 3.12.0
+BLAS/LAPACK: /scratch/home/hachepunto/miniforge/envs/bio46/lib/libopenblasp-r0.3.34.so;  LAPACK version 3.12.0
 
 locale:
- [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       
- [4] LC_COLLATE=C.UTF-8     LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8   
- [7] LC_PAPER=C.UTF-8       LC_NAME=C              LC_ADDRESS=C          
-[10] LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   
+[1] C
 
 time zone: America/Mexico_City
 tzcode source: system (glibc)
@@ -22,4 +19,4 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 loaded via a namespace (and not attached):
-[1] compiler_4.5.2
+[1] compiler_4.6.1

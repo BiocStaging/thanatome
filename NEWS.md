@@ -1,3 +1,7 @@
+# thanatome 0.99.1
+
+- `thanatome_score()` also reports `shared_ischemia`, the score of a signature of 620 genes that follow ischemic time with the same sign in most non-brain GTEx tissues; `death_signatures()` and `death_gene_sets()` accept `"shared_ischemia"`. The vignette has a section on how to read it.
+
 # thanatome 0.99.0
 
 - First version submitted to Bioconductor.
